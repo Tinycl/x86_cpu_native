@@ -1,3 +1,6 @@
+#ifndef __SVM_H__
+#define __SVM_H__
+
 typedef enum _SVM_VM_EXIT
 {
     VMEXIT_CR0_READ = 0x0000,
@@ -164,3 +167,5 @@ typedef enum _SVM_VM_EXIT
     AVIC_NOACCEL = 0x0402,
     VMEXIT_VMGEXIT = 0x0403,
 } SVM_VM_EXIT;
+
+#endif

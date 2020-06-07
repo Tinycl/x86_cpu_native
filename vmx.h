@@ -1,3 +1,5 @@
+#ifndef __VMX_H__
+#define __VMX_H__
 // Updated to reflect Intel SDM of January 2019
 
 // Appendix B Field Encoding in VMCS
@@ -257,3 +259,5 @@ typedef enum _VM_EXIT_REASON
     EXIT_REASON_RESERVED_65 = 65,         // Reserved
     EXIT_REASON_SPP = 66,                 // The processor attempted to determine an access’s sub - page write permission and encountered
 } VM_EXIT_REASON;
+
+#endif

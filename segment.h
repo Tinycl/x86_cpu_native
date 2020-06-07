@@ -25,7 +25,81 @@ typedef struct _UINT128
 } UINT128;
 #pragma pack()
 
-// see figure 3-6
+// see figure 2-1 x86 system level registers and data structures
+// see figure 3-2 x64 mode execution environment
+
+
+
+
+/* see figure 3-1 segmentation and paging
+* segment selector -> segment descriptor (gdt) -> linear address -> paging -> physical address
+*
+*/
+
+
+
+/* see figure 5-10 call gate mechanism
+* call gate descriptor in the gdt, ldt
+* far pointer(segment selector) -> gdt/ldt -> call gate descriptor -> code segment descriptor
+*
+*/
+
+/* see figure 6-1 relationship of the IDTR and IDT
+*
+*/
+
+/* see figure 6-3 interrupt procedure call
+*  interrupt vector -> IDT(interrupt or trap gate descriptor, offset) -> GDT/LDT(segment descriptor, base) -> linear address 
+*/
+
+/* see figure 6-6 interrupt task switch
+* interrupt vector -> IDT(task gate descriptor) -> GDT(TSS descriptor, base) -> TSS base address
+*/
+
+
+/* see figure 7-1 structure of a task
+*  see figure 7-5 task register
+*  tr.selector -> GDT(TSS descriptor, base, limit) -> tss
+*
+* task gate descriptor in the GDT, LDT, IDT; only available in x86 mode, not valid in x64 mode。 
+* see figure 7-7 task gate referencing the same task
+* LDT/IDT/GDT(task gate descriptor) -> GDT(TSS descriptor) -> tss
+*
+*
+*/
+
+
+//see figure 3-7, segment registers, cs, ss, ds, es, fs, gs, tr, ldtr
+typedef struct _SEGMENTR{
+    UINT16 visible; // segment selector
+    UINT64 hidden;  // base address, limit, access information
+}SEGMENTR;
+
+// descriptor table register, gdtr, idtr, ldtr, tr
+// lgdt,sdft,lidt,sidt,lldt,sldt,ltr,str
+// ldtr tr load/store descriptor,  ldtr descruptor in the gdt, tr descriptor in the gdt
+// see figure 3-11, figure 2-6
+typedef struct _X86_GDTR{
+    UINT16 limit;
+    UINT32 baseaddr;
+}x86_GDTR;
+typedef struct _X64_GDTR{
+    UINT16 limit;
+    UINT64 baseaddr;
+}X64_GDTR;
+typedef struct _X86_IDTR{
+    UINT16 limit;
+    UINT32 baseaddr;
+}x86_IDTR;
+typedef struct _X64_IDTR{
+    UINT16 limit;
+    UINT64 baseaddr;
+}X64_IDTR;
+
+
+
+
+// see figure 3-6, segment register-> visiable, cs,ds,es,fs,gs,tr,ldtr, (visable selector)
 typedef union _SELECTOR {
     UINT16 value;
     struct
@@ -466,7 +540,8 @@ typedef struct _X86_TSS
 
 // see figure 7-11
 #pragma pack(2)
-typedef union X64_TSS {
+typedef struct _X64_TSS
+{
     UINT32 rsvd0;
     UINT32 rsp0_lo;
     UINT32 rsp0_hi;
@@ -499,10 +574,34 @@ typedef union X64_TSS {
 
 //see figure 7-10
 #pragma pack(1)
-
+typedef struct _X16_TSS
+{
+    UINT8 ptl; // previous task link
+    UINT8 sp0;
+    UINT8 ss0;
+    UINT8 sp1;
+    UINT8 ss1;
+    UINT8 sp2;
+    UINT8 ss2;
+    UINT8 ip;
+    UINT8 flag;
+    UINT8 ax;
+    UINT8 cx;
+    UINT8 dx;
+    UINT8 bx;
+    UINT8 sp;
+    UINT8 bp;
+    UINT8 si;
+    UINT8 di;
+    UINT8 es;
+    UINT8 cs;
+    UINT8 ss;
+    UINT8 ds;
+    UINT8 ldtss; //task ldt selector
+} X16_TSS;
 #pragma pack()
 
-//see figure 6-2
+//see figure 6-2, task gate descriptor only available in x86 mode 
 typedef union _X86_TASKGATE_DESCRIPTOR {
     UINT64 value;
     struct
@@ -531,7 +630,6 @@ typedef struct _IA32_INTERRUPT_SSP_TABLE
     UINT64 ist7;
 } IA32_INTERRUPT_SSP_TABLE;
 
-//see figure 6-6
-// interrupt vector -> IDT(task gate) -> TSS selector -> GDT(TSS descriptor) -> TSS base address
+
 
 #endif

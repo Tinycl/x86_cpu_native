@@ -1,3 +1,6 @@
+#ifndef __MSR_H__
+#define __MSR_H__
+
 // MSR related to VMX in an enum so we can import it in IDA.
 
 typedef enum _MSR
@@ -73,3 +76,6 @@ typedef enum _MSR
 
 
 } MSR;
+
+
+#endif

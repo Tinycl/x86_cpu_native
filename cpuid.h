@@ -1,3 +1,22 @@
+#ifndef __CPUID_H__
+#define __CPUID_H__
+
+#ifndef UINT64
+#define UINT64 unsigned long long
+#endif
+
+#ifndef UINT32
+#define UINT32 unsigned int
+#endif
+
+#ifndef UINT16
+#define UINT16 unsigned short
+#endif
+
+#ifndef UINT8
+#define UINT8 unsigned char
+#endif
+
 typedef enum _CPUID {
     CPUID_BASIC_INFORMATION = 0x0,
     CPUID_PROCESSOR_INFO_AND_FEATURE_BITS = 0x1,
@@ -21,3 +40,24 @@ typedef enum _CPUID {
     CPUID_AMD_EASTER_EGG = 0x8FFFFFFF,
     CPUID_SECURE_VIRTUAL_MACHINE_SPECIFICATIONS = 0x8000000A,
 } CPUID;
+
+
+typedef struct _CPUID_DATA{
+    UINT32 eax;
+    UINT32 ebx;
+    UINT32 ecx;
+    UINT32 edx;
+}CPUID_DATA;
+
+void cpuid_helper(UINT32 id, CPUID_DATA* cpuid_data )
+{
+    UINT32 eax, ebx, ecx, edx;
+    UINT32 in = id;
+    __asm__ volatile("cpuid" : "=a"(eax),"=b"(ebx),"=c"(ecx),"=d"(edx) :"0"(in));
+    cpuid_data->eax = eax;
+    cpuid_data->ebx = ebx;
+    cpuid_data->ecx = ecx;
+    cpuid_data->edx = edx;
+}
+
+#endif
